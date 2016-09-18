@@ -1,0 +1,23 @@
+RedFace
+	color 255 0 0
+	time 5
+	addstage
+
+YellowFace
+	color 255 255 0
+	time 5
+	addstage
+
+RollingFace
+	transformstart
+	turn 120
+	transformend
+	time 3
+	addstage
+	transformstart
+	turn 240
+	transformend
+	time 3
+	addstage
+	time 3
+	addstage
