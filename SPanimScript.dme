@@ -7,7 +7,6 @@
 
 // BEGIN_FILE_DIR
 #define FILE_DIR .
-#define FILE_DIR "Demo1"
 // END_FILE_DIR
 
 // BEGIN_PREFERENCES
