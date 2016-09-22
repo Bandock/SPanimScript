@@ -61,6 +61,26 @@ SPanimScript
 							var/g = text2num(tokens[T++])
 							var/b = text2num(tokens[T])
 							Stage.SetColor(r, g, b)
+						else if(lvn == "easing")
+							var/list/easingtypes = list("linear" = LINEAR_EASING, "sine" = SINE_EASING,\
+							"circular" = CIRCULAR_EASING, "quad" = QUAD_EASING, "cubic" = CUBIC_EASING,\
+							"bounce" = BOUNCE_EASING, "elastic" = ELASTIC_EASING, "back" = BACK_EASING)
+							var/etype = lowertext(tokens[T])
+							var/etypefound = 0
+							for(var/ET in easingtypes)
+								if(etype == ET)
+									etypefound = 1
+									break
+							if(etypefound == 1)
+								if((T + 1) == length(tokens))
+									var/list/iomodes = list("in" = EASE_IN, "out" = EASE_OUT,\
+									"inout" = EASE_IN | EASE_OUT)
+									var/eiomode = lowertext(tokens[++T])
+									for(var/IO in iomodes)
+										if(eiomode == IO)
+											etype |= iomodes[IO]
+											break
+								Stage.SetEasing(easingtypes[etype])
 						else if(lvn == "addstage")
 							AS.AddStage(Stage)
 							Stage = new()
