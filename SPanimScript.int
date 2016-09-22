@@ -1,6 +1,6 @@
 // BEGIN_INTERNALS
 /*
-LAST_COMPILE_TIME: 1474570739
+LAST_COMPILE_TIME: 1474574751
 DIR: Demo1 
 PACKAGE_RSC_NAME: D:\GitHub Repositories\SPanimScript\SPanimScript_rsc.zip
 AUTO_FILE_DIR: OFF
@@ -10,7 +10,7 @@ PACKAGE_DME_NAME: D:\GitHub Repositories\SPanimScript\SPanimScript_src.zip
 LAST_COMPILE_VERSION: 511.1353
 PACKAGE_DME_START: 
 PACKAGE_TYPE: 1
-WINDOW: SPanimScript.dm;SPanimScript.dme;Demo1\Demo1.dm
+WINDOW: SPanimScript.dm
 PACKAGE_DME_INFO: 
 FILE: SPanimScript.dm
 PACKAGE_DME_DEMO: Demo1\Demo1.dm
