@@ -21,3 +21,12 @@ RollingFace
 	addstage
 	time 3
 	addstage
+
+AnimateBar
+	color 192 0 0
+	transformstart
+	addmatrix a 100.0
+	addmatrix c 50.0
+	transformend
+	time 50
+	addstage

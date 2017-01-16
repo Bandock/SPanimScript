@@ -2,6 +2,7 @@ SPanimScript
 	var
 		list
 			States = new()
+		flag = 0x00
 	New(file)
 		var/data = file2text(file)
 		var/list/dline = splittext(data, "\n")
@@ -56,6 +57,20 @@ SPanimScript
 									Stage.Turn(value)
 								else if(lvn == "scale")
 									Stage.Scale(value)
+							else if(transformmode == 0)
+								if(lvn == "turn" || lvn == "scale")
+									world.log << "Warning:  Transform mode is currently not enabled."
+						else if((lvn == "addmatrix" || lvn == "submatrix") && (T + 1) == length(tokens))
+							var/name = tokens[T++]
+							var/value = text2num(tokens[T])
+							if(transformmode == 1)
+								if(lvn == "addmatrix")
+									Stage.AddMatrix(name, value)
+								else if(lvn == "submatrix")
+									Stage.SubMatrix(name, value)
+							else if(transformmode == 0)
+								if(lvn == "addmatrix" || lvn == "submatrix")
+									world.log << "Warning:  Transform mode is currently not enabled."
 						else if(lvn == "color" && (T + 2) == length(tokens))
 							var/r = text2num(tokens[T++])
 							var/g = text2num(tokens[T++])
@@ -90,10 +105,19 @@ SPanimScript
 									Stage.transform = savestates["transform"]
 								savestates = new()
 							*/
-						else if(lvn == "transformstart" && transformmode == 0)
-							transformmode = 1
-						else if(lvn == "transformend" && transformmode == 1)
-							transformmode = 0
+						else if(lvn == "transformstart")
+							if(transformmode == 0)
+								transformmode = 1
+							else
+								world.log << "Warning:  Transform mode is already enabled."
+						else if(lvn == "transformend")
+							if(transformmode == 1)
+								transformmode = 0
+							else
+								world.log << "Warning:  Transform Mode is currently not enabled."
+						else
+							world.log << "Error:  Unknown command at line [D]."
+							flag |= 0x01
 						/*
 						else if(lvn == "save")
 							var/type = lowertext(tokens[T])
@@ -104,13 +128,16 @@ SPanimScript
 				States[statename] = AS
 	proc
 		GetState(statename)
-			if(States[statename] != null)
-				return States[statename]
+			if(!(flag & 0x01))
+				if(States[statename] != null)
+					return States[statename]
+				else
+					world.log << "Error:  There is no state by the name of [statename]."
+					return null
 			else
-				world.log << "Error:  There is no state by the name of [statename]."
-				return null
+				world.log << "Error:  This is state is non-functional due to scripting error(s)."
 
-AnimStage
+AnimStage // Animation Stage
 	var
 		alpha
 		color
@@ -139,6 +166,21 @@ AnimStage
 				transform = matrix() * factor
 			else
 				transform *= factor
+		AddMatrix(name, val)
+			if(transform == null)
+				transform = matrix()
+			var/matrix/m = transform
+			world << m.vars["[name]"]
+			if(m.vars["[name]"] != null)
+				m.vars["[name]"] += val
+			transform = m
+		SubMatrix(name, val)
+			if(transform == null)
+				transform = matrix()
+			var/matrix/m = transform
+			if(m.vars["[name]"] != null)
+				m.vars["[name]"] -= val
+			transform = m
 		GetStageArgData()
 			var/list/stageargs = new()
 			if(alpha != null)
@@ -154,9 +196,9 @@ AnimStage
 				stageargs["easing"] = easing
 			return stageargs
 
-AnimState
+AnimState // Animation State
 	var
-		list/stages = new()
+		list/stages = new() // Animation Stage List
 	proc
 		AddStage(AnimStage/stage)
 			src.stages += stage
@@ -169,7 +211,7 @@ AnimState
 atom
 	var
 		list
-			animstates = new()
+			animstates = new() // Animation State List
 	proc
 		InsertAnimationState(as_name, AnimState/anim_state)
 			animstates[as_name] = anim_state
